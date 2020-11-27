@@ -7,7 +7,8 @@ def hello_world():
 
     s = ["Hello, Haba!",
         "Hello, Arsen!",
-        "Hello, Karim!"]
+        "Hello, Karim!",
+        "Hello, Asadullin"]
 
     out = "<pre>{}</pre>".format("\n".join(s))
     return out
