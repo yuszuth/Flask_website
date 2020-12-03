@@ -5,11 +5,13 @@ import random
 
 app = Flask(__name__)
 
+
 @app.route('/')
 def menu():
     f = open("links.html")
     out = "<pre>{}</pre>".format("\n".join(f))
     return out
+
 
 @app.route('/task1/haba/')
 def hello_world():
@@ -33,7 +35,12 @@ def rand():
 def willnot():
     s = ["I will not waste time"] * 100
 
-    third_out = "<pre>{}</pre>".format("\n".join(s))
+    third_out = "<ul id=blackboard>"
+
+    for i in range(100):
+        f = s[i]
+        third_out += "<li>{}</li>".format("\n".join(f))
+    third_out += "</ul>"
     return third_out
 
 
