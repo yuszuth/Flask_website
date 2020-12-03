@@ -39,7 +39,7 @@ def willnot():
 
     for i in range(100):
         f = s[i]
-        third_out += "<li>{}</li>".format("\n".join(f))
+        third_out += "<li>{}</li>".format(f)
     third_out += "</ul>"
     return third_out
 
