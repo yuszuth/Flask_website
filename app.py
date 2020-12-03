@@ -11,7 +11,7 @@ def menu():
     out = "<pre>{}</pre>".format("\n".join(f))
     return out
 
-@app.route('/haba')
+@app.route('/task1/haba')
 def hello_world():
     s = ["Hello, Haba!",
          "Hello, Arsen!",
@@ -21,7 +21,7 @@ def hello_world():
     return out
 
 
-@app.route('/random')
+@app.route('/task1/random')
 def rand():
     s = [f"Haba's mark if {random.randint(0, 100)}"]
 
@@ -29,7 +29,7 @@ def rand():
     return sec_out
 
 
-@app.route('/i_will_not')
+@app.route('/task1/i_will_not')
 def willnot():
     s = ["I will not waste time"] * 100
 
