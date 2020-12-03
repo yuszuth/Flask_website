@@ -1,4 +1,5 @@
 from flask import Flask
+import ra
 app = Flask(__name__)
 
 @app.route('/')
@@ -11,3 +12,8 @@ def hello_world():
 
     out = "<pre>{}</pre>".format("\n".join(s))
     return out
+
+@app.route('/random')
+def random():
+	print("Haba's mark if ", sep="", end="")
+	print(random.randint(0, 100))
