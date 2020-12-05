@@ -1,47 +1,20 @@
-from flask import Flask
-import urllib
+from flask import Flask, render_template
 
 import random
 
 app = Flask(__name__)
 
 
-@app.route('/')
-def menu():
-    f = open("links.html")
-    out = "<pre>{}</pre>".format("\n".join(f))
-    return out
-
-
-@app.route('/task1/haba/')
-def hello_world():
-    s = ["Hello, Haba!",
-         "Hello, Arsen!",
-         "Hello, Karim!", ]
-
-    out = "<pre>{}</pre>".format("\n".join(s))
-    return out
-
-
-@app.route('/task1/random/')
-def rand():
-    s = [f"Haba's mark if {random.randint(0, 100)}"]
-
-    sec_out = "<pre>{}</pre>".format("\n".join(s))
-    return sec_out
-
-
-@app.route('/task1/i_will_not/')
-def willnot():
-    s = ["I will not waste time"] * 100
-
-    third_out = "<ul id=blackboard>"
-
-    for i in range(100):
-        f = s[i]
-        third_out += "<li>{}</li>".format(f)
-    third_out += "</ul>"
-    return third_out
+@app.route('/<city>/<category>/<ad>/')
+def menu(city, category, ad):
+    s = [city, category, ad]
+    nouns = ("puppy", "car", "rabbit", "girl", "monkey")
+    verbs = ("runs", "hits", "jumps", "drives", "barfs")
+    adv = ("crazily.", "dutifully.", "foolishly.", "merrily.", "occasionally.")
+    adj = ("adorable", "clueless", "dirty", "odd", "stupid")
+    ans = random.choice(adj) + " " + random.choice(nouns) + " " + random.choice(verbs) + " " + random.choice(adv)
+    x = ad.split('_')
+    return render_template("links.html", city=city, category=category, ad=ad, ans=ans, x=x)
 
 
 if __name__ == "__main__":
