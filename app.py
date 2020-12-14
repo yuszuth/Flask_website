@@ -7,7 +7,7 @@ from flask import Flask, render_template
 app = Flask(__name__)
 
 
-@app.route('/task2/<city>/<category>/<ad>/')
+@app.route('/task2/avito/<city>/<category>/<ad>/')
 def avitooo(city, category, ad):
     s = [city, category, ad]
     nouns = ("puppy", "car", "rabbit", "girl", "monkey")
