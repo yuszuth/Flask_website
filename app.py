@@ -9,12 +9,8 @@ app = Flask(__name__)
 
 @app.route('/task2/avito/<city>/<category>/<ad>/')
 def avitooo(city, category, ad):
-    s = [city, category, ad]
-    nouns = ("puppy", "car", "rabbit", "girl", "monkey")
-    verbs = ("runs", "hits", "jumps", "drives", "barfs")
-    adv = ("crazily.", "dutifully.", "foolishly.", "merrily.", "occasionally.")
-    adj = ("adorable", "clueless", "dirty", "odd", "stupid")
-    ans = random.choice(adj) + " " + random.choice(nouns) + " " + random.choice(verbs) + " " + random.choice(adv)
+    ans1 = city + category + ad
+    ans = bytes(ans1)
     x = ad.split('_')
     return render_template("links.html", city=city, category=category, ad=ad, ans=ans, x=x)
 
@@ -45,6 +41,7 @@ def numbers_to_words(num):
     else:
         json_dict["status"] = "FAIL"
     return json.dumps(json_dict)
+
 
 if __name__ == "__main__":
     app.debug = True
