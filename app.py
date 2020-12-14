@@ -30,7 +30,7 @@ def codeforces(username):
         return s
 
 
-@app.route('task2/num2words/<num>/')
+@app.route('/task2/num2words/<num>/')
 def numbers_to_words(num):
     json_dict = dict()
     if 0 <= num <= 999:
