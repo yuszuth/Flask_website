@@ -9,8 +9,7 @@ app = Flask(__name__)
 
 @app.route('/task2/avito/<city>/<category>/<ad>/')
 def avitooo(city, category, ad):
-    ans1 = city + category + ad
-    ans = bytes(ans1)
+    ans = city + category + ad
     x = ad.split('_')
     return render_template("links.html", city=city, category=category, ad=ad, ans=ans, x=x)
 
