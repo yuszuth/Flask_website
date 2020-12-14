@@ -2,3 +2,5 @@ Flask
 gunicorn
 requests
 num2words
+json
+
