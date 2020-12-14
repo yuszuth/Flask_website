@@ -1,5 +1,6 @@
 import random
 import requests
+import json
 from num2words import num2words
 from flask import Flask, render_template
 
@@ -30,21 +31,20 @@ def codeforces(username):
         return s
 
 
-@app.route('/task2/num2words/<num>/')
+@app.route('/task2/num2words/<int:num>/')
 def numbers_to_words(num):
     json_dict = dict()
     if 0 <= num <= 999:
-        ch = ''
+        ch = False
         if num % 2 == 0:
-            ch = 'true'
-        else:
-            ch = 'false'
+            ch = True
         json_dict["status"] = "OK"
-        json_dict["number"] = f"{num}"
+        json_dict["number"] = num
         json_dict["isEven"] = ch
         json_dict["words"] = num2words(num)
     else:
         json_dict["status"] = "FAIL"
+    return json.dumps(json_dict)
 
 if __name__ == "__main__":
     app.debug = True
