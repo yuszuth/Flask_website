@@ -7,10 +7,10 @@ from flask import Flask, render_template, abort, request
 app = Flask(__name__)
 
 
-proxies = {
-    "http": "http://192.168.2.1:3128",
-    "https": "http://192.168.2.1:3128"
-}
+# proxies = {
+    # "http": "http://192.168.2.1:3128",
+    # "https": "http://192.168.2.1:3128"
+# }
 
 
 def comp_handle(e):
@@ -61,7 +61,7 @@ def avitooo(city, category, ad):
 
 @app.route('/task2/cf/profile/<username>/')
 def codeforces(username):
-    data = requests.get(f'https://codeforces.com/api/user.info?handles={username}', proxies=proxies).json()
+    data = requests.get(f'https://codeforces.com/api/user.info?handles={username}').json()
     # print(data)
     if data['status'] == 'OK':
         rating = data['result'][0]['rating']
@@ -92,7 +92,7 @@ def numbers_to_words(num):
 def single(handle, page_number):
     page_number = int(page_number)
     p_n = int(page_number)
-    data = requests.get(f'http://codeforces.com/api/user.status?handle={handle}&from=1&count=100', proxies=proxies).json()
+    data = requests.get(f'http://codeforces.com/api/user.status?handle={handle}&from=1&count=100').json()
     print(data)
     if data['status'] == 'OK':
         time = list()
@@ -125,7 +125,7 @@ def cf_top():
     elements = list()
     for i in range(len(handles)):
         handle = handles[i]
-        data = requests.get(f'https://codeforces.com/api/user.info?handles={handle}', proxies=proxies).json()
+        data = requests.get(f'https://codeforces.com/api/user.info?handles={handle}').json()
         rating = data['result'][0]['rating']
         elements.append((handle, rating))
     if sort_check == 'handle':
