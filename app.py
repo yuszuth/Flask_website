@@ -130,8 +130,9 @@ def cf_top():
     for i in range(len(handles)):
         handle = handles[i]
         data = requests.get(f'https://codeforces.com/api/user.info?handles={handle}').json()
+        cur_handle = data['result'][0]['handle']
         rating = data['result'][0]['rating']
-        elements.append((handle, rating))
+        elements.append((cur_handle, rating))
     if sort_check == 'handle':
         elements.sort(key=comp_handle)
     elif sort_check == 'rating':
