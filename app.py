@@ -87,6 +87,10 @@ def numbers_to_words(num):
     return json.dumps(json_dict)
 
 
+@app.route('/task3/cf/profile/<handle>/')
+def only(handle):
+    return single(handle, '1')
+
 
 @app.route('/task3/cf/profile/<handle>/page/<page_number>/')
 def single(handle, page_number):
