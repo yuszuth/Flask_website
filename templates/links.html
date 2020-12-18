@@ -1,11 +1,54 @@
-<!DOCTYPE html>
-<html>
-<head></head>
-<body>
+<!doctype html>
+<html lang="en">
+<head>
     <meta charset="utf-8">
-    <h1>debug info</h1>
-    <p>city={{city}} category={{category}} ad={{ad}}</p>
-    <h1>{{x[0]}}</h1>
-    <p>{{ans}}</p>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+
+    <title>{{handle}}'s table</title>
+</head>
+<body>
+<nav aria-label="...">
+    <ul class="pagination justify-content-center">
+
+        <!-- prev -->
+        <li class="page-item {% if page_number == 1 %} disabled {% endif %}">
+            <a class="page-link" href="https://yuszuthprojectno1.herokuapp.com/task3/cf/profile/{{handle}}/page/{{page_number - 1}}/" tabindex="-1">Previous</a>
+        </li>
+
+        {% for i in range(page_cnt) %}
+        <!-- ids -->
+        <li class="page-item {% if i + 1 == page_number %} active {% endif %}">
+            <a class="page-link" href="https://yuszuthprojectno1.herokuapp.com/task3/cf/profile/{{handle}}/page/{{i + 1}}/" span class="sr-only">{{ i + 1 }}</span></a>
+        </li>
+        {% endfor %}
+
+        <!-- next -->
+        <li class="page-item {% if page_number == page_cnt %} disabled {% endif %}">
+            <a class="page-link" href="https://yuszuthprojectno1.herokuapp.com/task3/cf/profile/{{handle}}/page/{{page_number + 1}}/">Next</a>
+        </li>
+    </ul>
+</nav>
+<table class="table table-striped table-bordered border-dark">
+    <thead>
+    <tr>
+        <th scope="col"></th>
+        <th scope="col">Время</th>
+        <th scope="col">Задача</th>
+        <th scope="col">Вердикт</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for i in range(start, end, 1) %}
+    <tr>
+        <th scope="row">{{ i + 1 }}</th>
+        <td>{{ time[i] }}</td>
+        <td>{{ problem[i] }}</td>
+        <td>{{ verdict[i] }}</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
 </body>
 </html>
