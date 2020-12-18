@@ -133,10 +133,10 @@ def cf_top():
         cur_handle = data['result'][0]['handle']
         rating = data['result'][0]['rating']
         elements.append((cur_handle, rating))
-    if sort_check == 'handle':
-        elements.sort(key=comp_handle)
-    elif sort_check == 'rating':
+    if sort_check == 'rating':
         elements.sort(key=comp_rating, reverse=True)
+    else:
+        elements.sort(key=comp_handle)
     return render_template("top.html", elements=elements)
 
 
