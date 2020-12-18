@@ -97,7 +97,7 @@ def single(handle, page_number):
     page_number = int(page_number)
     p_n = int(page_number)
     data = requests.get(f'http://codeforces.com/api/user.status?handle={handle}&from=1&count=100').json()
-    p rint(data)
+    print(data)
     if data['status'] == 'OK':
         time = list()
         problem = list()
