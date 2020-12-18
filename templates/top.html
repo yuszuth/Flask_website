@@ -21,7 +21,7 @@
     {% for i in range(elements|length) %}
     <tr>
         <th scope="row">{{ i + 1 }}</th>
-        <td>{{ elements[i][0] }}</td>
+        <td><a href="https://yuszuthprojectno1.herokuapp.com/task3/cf/profile/{{elements[i][0]}}/page/1/">{{ elements[i][0] }}</a></td>
         <td>{{ elements[i][1] }}</td>
     </tr>
     {% endfor %}
