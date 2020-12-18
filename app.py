@@ -2,7 +2,7 @@ import random
 import requests
 import json
 from num2words import num2words
-from flask import Flask, render_template, abort, request
+from flask import Flask, render_template, abort, request, redirect, url_for
 
 app = Flask(__name__)
 
@@ -89,7 +89,7 @@ def numbers_to_words(num):
 
 @app.route('/task3/cf/profile/<handle>/')
 def only(handle):
-    return single(handle, '1')
+    return redirect(url_for('single', handle=handle, page_number='1'))
 
 
 @app.route('/task3/cf/profile/<handle>/page/<page_number>/')
@@ -97,7 +97,7 @@ def single(handle, page_number):
     page_number = int(page_number)
     p_n = int(page_number)
     data = requests.get(f'http://codeforces.com/api/user.status?handle={handle}&from=1&count=100').json()
-    print(data)
+    p rint(data)
     if data['status'] == 'OK':
         time = list()
         problem = list()
