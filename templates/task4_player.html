@@ -8,9 +8,9 @@
 </head>
 <body>
 {% if player_name_fail == True %}
-<div id="error" class="card text-white bg-warning" style="max-width: 18rem;">Please, enter your name</div>
+<a id="error" class="card text-white bg-warning" style="max-width: 18rem;">Please, enter your name</a>
 {% elif finished_game_fail == True %}
-<div id="error" class="card text-white bg-warning" style="max-width: 18rem;">Please, enter your name</div>
+<a id="error" class="card text-white bg-warning" style="max-width: 18rem;">Please, enter your name</a>
 {% else %}
 <form id="play" action="{{link}}" method="post">
     <h1 class="plain-text">Play Super Shokerss Game</h1>
