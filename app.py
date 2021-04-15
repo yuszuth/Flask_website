@@ -7,6 +7,7 @@ from flask import Flask, render_template, abort, request, redirect, url_for
 
 app = Flask(__name__)
 
+
 # proxies = {
 #     "http": "http://192.168.2.1:3128",
 #     "https": "http://192.168.2.1:3128"
@@ -165,7 +166,7 @@ data_set = santa_set
 santa_get = {
     "token": "4UffYATBFJOqTiy9aJDnajwBa5XrSTfy",
     "secret": "f61a804d43aff225ef9986f247de5112",
-    "command": "set",
+    "command": "get",
     "key": ""
 }
 
@@ -179,8 +180,6 @@ def creation():
         game_name = form_input["input_name"]
         link_pad = hashlib.md5(bytes(str(random.randint(0, 2 ** 128)) + game_name, encoding='utf-8')).hexdigest()
         secret = hashlib.md5(bytes(str(random.randint(0, 2 ** 128)), encoding='utf-8')).hexdigest()
-        print(link_pad)
-        print()
         game_link = f"/task4/santa/play/{link_pad}"
         toss_link = f" /task4/santa/toss/{link_pad}/{secret}"
         post_data = {"name": game_name, "pad": link_pad, "secret": secret, "link_play": game_link,
@@ -196,12 +195,11 @@ def creation():
 @app.route('/task4/santa/play/<link>', methods=['POST', 'GET'])
 def player(link):
     if request.method == 'POST':
-
         form_input = request.form
         player_name = form_input["player_name"]
         if player_name.strip(' ') == '':
-            return render_template('task4_player.html', link=link, player_name_fail=True, finished_game_fail=False)
-
+            new_link = f'/task4/santa/play/{link}'
+            return render_template('task4_player.html', link=new_link, player_name_fail=True, finished_game_fail=False)
         data_get["key"] = link
         _get = requests.post("https://arsenwisheshappy2021.herokuapp.com/query", data=data_get)
         game_info = json.loads(_get.text)
@@ -212,13 +210,49 @@ def player(link):
 
         return render_template("task4_successful_game.html", name=player_name)
     else:
+        new_link = f'/task4/santa/play/{link}'
         data_get["key"] = link
         _get = requests.post("https://arsenwisheshappy2021.herokuapp.com/query", data=data_get)
         game_info = json.loads(_get.text)
-        if game_info["activity"] == False:
-            return render_template("task4_player.html", link=link, player_name_fail=False, finished_game_fail=True)
+        if not game_info["activity"]:
+            return render_template("task4_player.html", link=new_link, player_name_fail=False, finished_game_fail=True)
         else:
-            return render_template("task4_player.html", link=link, player_name_fail=False, finished_game_fail=False)
+            return render_template("task4_player.html", link=new_link, player_name_fail=False, finished_game_fail=False)
+
+
+@app.route('/task4/santa/toss/<link>/<secret>', methods=['POST', 'GET'])
+def toss(link, secret):
+    if request.method == 'GET':
+        data_get["key"] = link
+        _get = requests.post("https://arsenwisheshappy2021.herokuapp.com/query", data=data_get)
+        game_info = json.loads(_get.text)
+        if game_info["activity"] == "False":
+            finished_game_fail = True
+        else:
+            finished_game_fail = False
+        players = game_info["players"]
+        if len(players) == 0 or len(players) % 2 == 1:
+            players_count_fail = True
+        else:
+            players_count_fail = False
+        new_link = "/task4/santa/toss/{link}/{secret}".format(link=link, secret=secret)
+        return render_template("task4_pre_toss.html", finished_game_fail=finished_game_fail,
+                               players_count_fail=players_count_fail, players=players, new_link=new_link)
+    else:
+        data_get["key"] = link
+        _get = requests.post("https://arsenwisheshappy2021.herokuapp.com/query", data=data_get)
+        game_info = json.loads(_get.text)
+        players = game_info["players"]
+        random.shuffle(players)
+        pairs = dict()
+        for i in range(0, len(players) // 2):
+            pairs.update({players[i * 2]: players[i * 2 + 1]})
+        game_info["activity"] = "False"
+        data_set["key"] = link
+        data_set["value"] = json.dumps(game_info)
+        requests.post("https://arsenwisheshappy2021.herokuapp.com/query", data=data_set)
+        first_players = list(pairs.keys())
+        return render_template("task4_post_toss.html", pairs=pairs, first_players=first_players)
 
 
 if __name__ == "__main__":
