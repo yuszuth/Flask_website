@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+</head>
+<body>
+{% if player_name_fail == True %}
+<div id="error" class="card text-white bg-warning" style="max-width: 18rem;">Please, enter your name</div>
+{% elif finished_game_fail == True %}
+<div id="error" class="card text-white bg-warning" style="max-width: 18rem;">Please, enter your name</div>
+{% else %}
+<form id="play" action="{{link}}" method="post">
+    <h1 class="plain-text">Play Super Shokerss Game</h1>
+    <div>
+        <a1 class="plain-text">Name</a1> 
+        <input name="player_name" type="text"/>
+    </div>
+    <br>
+    <input class="btn btn-primary mb-3" name="player_name" type="submit" value="PLAY!"/>
+</form>
+{% endif %}
+</body>
+</html>
