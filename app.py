@@ -7,10 +7,10 @@ from flask import Flask, render_template, abort, request, redirect, url_for
 
 app = Flask(__name__)
 
-proxies = {
-    "http": "http://192.168.2.1:3128",
-    "https": "http://192.168.2.1:3128"
-}
+# proxies = {
+#     "http": "http://192.168.2.1:3128",
+#     "https": "http://192.168.2.1:3128"
+# }
 
 
 # Task3 functions
@@ -187,7 +187,7 @@ def creation():
                      "link_toss": toss_link, "activity": True, "players": []}
         data_set['key'] = link_pad
         data_set['value'] = json.dumps(post_data)
-        requests.post('https://arsenwisheshappy2021.herokuapp.com/query', data=data_set, proxies=proxies)
+        requests.post('https://arsenwisheshappy2021.herokuapp.com/query', data=data_set)
         return render_template("task4_created.html", game=game_link, toss=toss_link)
     else:
         return render_template("task4_create.html")
