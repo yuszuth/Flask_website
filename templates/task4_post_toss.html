@@ -7,6 +7,11 @@
           integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
 </head>
 <body>
-<div id="error" class="card text-white bg-success" style="max-width: 18rem;">You are in the game! Your nickname is {{name}}.</div>
+<h4>Players:</h4>
+<ul id="pairs">
+	{% for player in first_players %}
+	<li>{{player}} + {{pairs[player]}}</li>
+	{% endfor %}
+</ul>
 </body>
 </html>

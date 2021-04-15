@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+</head>
+<body>
+{% if finished_game_fail == True %}
+<h1 id="error" class="card text-white bg-warning" style="max-width: 18rem;">Your game is finished!</h1>
+{% else %}
+<h1>Play Super Shokersss game!</h1>
+{% if players_count_fail == True %}
+<div id="error" class="card text-white bg-warning" style="max-width: 18rem;">Players count is not even or less than two! More players wanted</div>
+{% endif %}
+<h4>Players:</h4>
+<ul>
+    {% for player in players %}
+    <li>{{player}}</li>
+    {% endfor %}
+</ul>
+{% if players_count_fail == False %}
+<form id="toss" action="{{new_link}}" method="post">
+    <input class="btn btn-primary mb-3" name="toss" type="submit" value="TOSS!"/>
+</form>
+{% endif %}
+{% endif %}
+</body>
+</html>
