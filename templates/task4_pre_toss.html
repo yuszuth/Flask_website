@@ -8,23 +8,23 @@
 </head>
 <body>
 {% if finished_game_fail == True %}
-<h1 id="error" class="card text-white bg-warning" style="max-width: 18rem;">Your game is finished!</h1>
+    <h1 id="error" class="card text-white bg-warning" style="max-width: 18rem;">Your game is finished!</h1>
 {% else %}
-<h1>Play Super Shokersss game!</h1>
-{% if players_count_fail == True %}
-<div id="error" class="card text-white bg-warning" style="max-width: 18rem;">Players count is not even or less than two! More players wanted</div>
-{% endif %}
-<h4>Players:</h4>
-<ul>
-    {% for player in players %}
-    <li>{{player}}</li>
-    {% endfor %}
-</ul>
-{% if players_count_fail == False %}
-<form id="toss" action="{{new_link}}" method="post">
-    <input class="btn btn-primary mb-3" name="toss" type="submit" value="TOSS!"/>
-</form>
-{% endif %}
+    <h1>Play Super Shokersss game!</h1>
+    {% if players_count_fail == True %}
+        <div id="error" class="card text-white bg-warning" style="max-width: 18rem;">Players count is not even or less than two! More players wanted</div>
+    {% endif %}
+    <h4>Players:</h4>
+    <ul>
+        {% for player in players %}
+        <li>{{player}}</li>
+        {% endfor %}
+    </ul>
+    {% if players_count_fail == False %}
+        <form id="toss" action="{{new_link}}" method="post">
+            <input class="btn btn-primary mb-3" name="toss" type="submit" value="TOSS!"/>
+        </form>
+    {% endif %}
 {% endif %}
 </body>
 </html>
