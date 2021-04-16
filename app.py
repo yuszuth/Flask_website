@@ -226,7 +226,7 @@ def toss(link, secret):
         data_get["key"] = link
         _get = requests.post("https://arsenwisheshappy2021.herokuapp.com/query", data=data_get)
         game_info = json.loads(_get.text)
-        if game_info["activity"] == "False":
+        if not game_info["activity"]:
             finished_game_fail = True
         else:
             finished_game_fail = False
