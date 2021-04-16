@@ -247,7 +247,7 @@ def toss(link, secret):
         pairs = dict()
         for i in range(0, len(players) // 2):
             pairs.update({players[i * 2]: players[i * 2 + 1]})
-        game_info["activity"] = "False"
+        game_info["activity"] = False
         data_set["key"] = link
         data_set["value"] = json.dumps(game_info)
         requests.post("https://arsenwisheshappy2021.herokuapp.com/query", data=data_set)
