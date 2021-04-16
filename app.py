@@ -196,7 +196,7 @@ def creation():
 def player(link):
     if request.method == 'POST':
         form_input = request.form
-        player_name = form_input["player_name"]
+        player_name = form_input["name"]
         if player_name.strip(' ') == '':
             new_link = f'/task4/santa/play/{link}'
             return render_template('task4_player.html', link=new_link, player_name_fail=True, finished_game_fail=False)
