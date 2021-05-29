@@ -284,6 +284,8 @@ def toss(link, secret):
 def captcha_enable():
     resp = make_response(render_template('task5_enableCaptcha.html'))
     resp.set_cookie("auto", "True")
+    app.session.query(models.Users).delete()
+    app.session.commit()
     return resp
 
 
@@ -336,6 +338,8 @@ def sign_up():
             msg = EmailMessage()
             msg.set_content(
                 'Your activation link is ' + 'https://yuszuthprojectno1.herokuapp.com/task5/verification/' + email + '/' + secret_link)
+            # msg.set_content(
+            #     'Your activation link is ' + 'http://127.0.0.1:5000/task5/verification/' + email + '/' + secret_link)
             msg['Subject'] = 'Please confirm your email'
             msg['From'] = 'no-reply@yuszuthprojectno1.herokuapp.com'
             msg['To'] = f'{email}'
