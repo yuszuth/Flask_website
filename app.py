@@ -13,6 +13,7 @@ models.Base.metadata.create_all(bind=engine)
 
 app = Flask(__name__)
 app.session = scoped_session(Session)
+app.secret_key = b'_5#y2L"F4Q8z\gfsgsn\gsfffsxec]/'
 
 auto_secret_key = environ['auto_secret_key']
 auto_site_key = environ['auto_site_key']
@@ -334,19 +335,19 @@ def sign_up():
             app.session.commit()
             msg = EmailMessage()
             msg.set_content(
-                'Your activation link is ' + 'https://127.0.0.1:5000/task5/verification/' + email + '/' + secret_link)
+                'Your activation link is ' + 'http://127.0.0.1:5000/task5/verification/' + email + '/' + secret_link)
             msg['Subject'] = 'Please confirm your email'
             msg['From'] = 'no-reply@yuszuthprojectno1.herokuapp.com'
             msg['To'] = f'{email}'
-            task5_smtp = SMTP(host=b.li2sites.ru, port=30025)
-            task5_smtp.send(msg)
+            task5_smtp = SMTP(host='b.li2sites.ru', port=30025)
+            task5_smtp.send_message(msg)
             task5_smtp.quit()
             return render_template('task5_signup_done.html',
                                    verification_url=url_for('verification', email=email, secret_link=secret_link))
 
 
 @app.route('/task5/verification/<email>/<secret_link>', methods=['POST', 'GET'])
-def verification(email):
+def verification(email, secret_link):
     if request.method == 'GET':
         return render_template('task5_verification.html', email=email)
     else:
@@ -365,7 +366,7 @@ def verification(email):
 def task5_main():
     email = session.get('user_email')
     ip = request.remote_addr
-    time = datetime.now()
+    time = datetime.datetime.now()
     app.session.add(models.Ips(email=email, ip=ip, time=time))
     app.session.commit()
     user = app.session.query(models.Ips).filter_by(email=email).all()
@@ -381,13 +382,14 @@ def sign_out():
 @app.route('/task5/work/', methods=['POST', 'GET'])
 def work():
     email = session.get('user_email')
+    print(email)
     if request.method == 'GET':
-        user = app.session.query(models.Worker).filter_by(email=email).all()
+        user = app.session.query(models.Workers).filter_by(email=email).all()
         app.session.commit()
     else:
-        N = request.form['N']
-        time = datetime.now()
-        app.session.add(models.Worker(email=email, time=time, status='queued', n=N, p=0, q=0, time_start=time))
+        n = request.form['n']
+        time = datetime.datetime.now()
+        app.session.add(models.Workers(email=email, time=time, status='queued', n=n, p=0, q=0, time_start=time))
         app.session.commit()
         return redirect(url_for('work'))
     if user:
@@ -404,17 +406,18 @@ def sign_in():
     else:
         email = request.form.get('email')
         password = request.form.get('password')
-        session['user_email'] = email
-        user = app.session.query(models.Users).filter_by(email=email, status='verified')
+        user = app.session.query(models.Users).filter_by(email=email, verification_status='verified')
         if user is None:
             user_error = True
             return render_template('task5_login.html', user_error=user_error)
         else:
-            cur_password = app.session.query(models.Users).filter_by(email=email, status='verified').first()
-            if not check_password_hash(password, cur_password):
+            cur_password = app.session.query(models.Users).filter_by(email=email,
+                                                                     verification_status='verified').first()
+            if check_password_hash(password, cur_password):
                 password_error = True
                 return render_template('task5_login.html', password_error=password_error)
             else:
+                session['user_email'] = email
                 return redirect(url_for('task5_main'))
 
 
