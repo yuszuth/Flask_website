@@ -335,7 +335,7 @@ def sign_up():
             app.session.commit()
             msg = EmailMessage()
             msg.set_content(
-                'Your activation link is ' + 'http://127.0.0.1:5000/task5/verification/' + email + '/' + secret_link)
+                'Your activation link is ' + 'https://yuszuthprojectno1.herokuapp.com/task5/verification/' + email + '/' + secret_link)
             msg['Subject'] = 'Please confirm your email'
             msg['From'] = 'no-reply@yuszuthprojectno1.herokuapp.com'
             msg['To'] = f'{email}'
