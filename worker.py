@@ -66,7 +66,7 @@ def worker(n):
 
 while True:
     print('############ next cycle')
-    answer = database.query(Worker).filter_by(status='queued')
+    answer = database.query(Workers).filter_by(status='queued')
     for att in answer:
         att.status = 'Progressing'
         database.add(att)
