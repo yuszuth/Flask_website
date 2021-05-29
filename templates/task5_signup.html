@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="https://www.google.com/recaptcha/api.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+</head>
+<body>
+{% if bot_error == True %}
+<h1 id="error">You are a bot!</h1>
+{% endif %}
+{% if empty_email_error == True %}
+<h1 id="error">Please, fill all required fields!</h1>
+{% endif %}
+{% if registered_email_error == True %}
+<h1 id="error">This email adress is already used!</h1>
+{ %endi f%}
+<form method="POST" id="sign-up">
+    <div>
+        <div class="container-fluid" text-align: center>
+            <div>
+                <h5><p class="text-center">Email<input type="email" placeholder="name@example.com" name="email"/></p>
+                </h5>
+            </div>
+            <div>
+                <h5><p class="text-center">Password<input type="password" placeholder="Password" name="password" id="password"/></p></h5>
+                <h5><p class="text-center">Repeat your password<input type="password" placeholder="Password again" name="password_repeat" id="password2"/>
+                </p></h5>
+            </div>
+        </div>
+    </div>
+    <div class="g-recaptcha" style="width:100%; display: flex; justify-content: center" data-sitekey={{site_key}}></div>
+
+    <div class="container" style="width:28%">
+        <div class="row justify-content-around">
+            <div class="col-4">
+                <button type="submit" class="btn btn-outline-primary">
+                    Sign in
+                </button>
+            </div>
+            <div class="col-4">
+                <button type="submit" type="radio" class="btn btn-primary">Register</button>
+            </div>
+        </div>
+    </div>
+</form>
+</body>
+</html>
