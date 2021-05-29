@@ -2,7 +2,5 @@ Flask
 gunicorn
 requests
 num2words
-operator
 werkzeug
 sqlalchemy
-
