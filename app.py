@@ -1,11 +1,23 @@
-import random
-import requests
-import json
-import hashlib
+import random, string, requests, json, hashlib, datetime
+from sqlalchemy.orm import scoped_session
+from email.message import EmailMessage
+from os import environ
 from num2words import num2words
-from flask import Flask, render_template, abort, request, redirect, url_for
+from flask import Flask, render_template, abort, request, redirect, url_for, make_response, session
+from smtplib import SMTP
+import models
+from database import Session, engine
+from werkzeug.security import check_password_hash, generate_password_hash
+
+models.Base.metadata.create_all(bind=engine)
 
 app = Flask(__name__)
+app.session = scoped_session(Session)
+
+auto_secret_key = environ['auto_secret_key']
+auto_site_key = environ['auto_site_key']
+my_secret_key = environ['my_secret_key']
+my_site_key = environ['my_site_key']
 
 
 # proxies = {
@@ -21,6 +33,18 @@ def comp_handle(e):
 
 def comp_rating(e):
     return e[1]
+
+
+# Captcha Check
+def is_human(captcha_response):
+    if request.cookies.get('auto') == 'True':
+        secret = auto_secret_key
+    else:
+        secret = my_secret_key
+    payload = {'response': captcha_response, 'secret': secret}
+    response = requests.post("https://www.google.com/recaptcha/api/siteverify", payload)
+    response_text = json.loads(response.text)
+    return response_text['success']
 
 
 # Task1
@@ -152,7 +176,6 @@ def page_not_found(e):
 
 
 # Task4
-
 santa_set = {
     "token": "4UffYATBFJOqTiy9aJDnajwBa5XrSTfy",
     "secret": "f61a804d43aff225ef9986f247de5112",
@@ -253,6 +276,146 @@ def toss(link, secret):
         requests.post("https://arsenwisheshappy2021.herokuapp.com/query", data=data_set)
         first_players = list(pairs.keys())
         return render_template("task4_post_toss.html", pairs=pairs, first_players=first_players)
+
+
+# Task 5
+@app.route("/task5/test/enable")
+def captcha_enable():
+    resp = make_response(render_template('task5_enableCaptcha.html'))
+    resp.set_cookie("auto", "True")
+    return resp
+
+
+@app.route("/task5/test/disable")
+def captcha_disable():
+    resp = make_response(render_template('task5_disableCaptcha.html'))
+    resp.set_cookie("auto", "False")
+    return resp
+
+
+@app.route('/task5/sign-up/', methods=['POST', 'GET'])
+def sign_up():
+    bot_error = False
+    empty_email_error = False
+    registered_email_error = False
+    if request.method == 'GET':
+        auto = request.cookies.get('auto')
+        if auto == 'True':
+            site_key = auto_site_key
+        else:
+            site_key = my_site_key
+        return render_template('task5_signup.html', bot_error=bot_error, empty_email_error=empty_email_error,
+                               registered_email_error=registered_email_error, site_key=site_key)
+    else:
+        captcha_resp = request.form['g-recaptcha-response']
+        auto = request.cookies.get('auto')
+        if auto == 'True':
+            site_key = auto_site_key
+        else:
+            site_key = my_site_key
+        email = request.form['email']
+        cur_user = app.session.query(models.Users).filter_by(email=email).all()
+        if not is_human(captcha_resp):
+            bot_error = True
+            return render_template('task5_signup.html', bot_error=bot_error, empty_email_error=empty_email_error,
+                                   registered_email_error=registered_email_error, site_key=site_key)
+        elif email == '':
+            empty_email_error = True
+            return render_template('task5_signup.html', bot_error=bot_error, empty_email_error=empty_email_error,
+                                   registered_email_error=registered_email_error, site_key=site_key)
+        elif cur_user:
+            registered_email_error = True
+            return render_template('task5_signup.html', bot_error=bot_error, empty_email_error=empty_email_error,
+                                   registered_email_error=registered_email_error, site_key=site_key)
+        else:
+            secret_link = ''.join(random.choice(string.ascii_letters) for i in range(30))
+            secret_link += ''.join(random.choice(string.digits) for i in range(10))
+            app.session.add(models.Users(email=email, secret_link=secret_link, verification_status='not_verified'))
+            app.session.commit()
+            msg = EmailMessage()
+            msg.set_content(
+                'Your activation link is ' + 'https://127.0.0.1:5000/task5/verification/' + email + '/' + secret_link)
+            msg['Subject'] = 'Please confirm your email'
+            msg['From'] = 'no-reply@yuszuthprojectno1.herokuapp.com'
+            msg['To'] = f'{email}'
+            task5_smtp = SMTP(host=b.li2sites.ru, port=30025)
+            task5_smtp.send(msg)
+            task5_smtp.quit()
+            return render_template('task5_signup_done.html',
+                                   verification_url=url_for('verification', email=email, secret_link=secret_link))
+
+
+@app.route('/task5/verification/<email>/<secret_link>', methods=['POST', 'GET'])
+def verification(email):
+    if request.method == 'GET':
+        return render_template('task5_verification.html', email=email)
+    else:
+        password = request.form.get('password')
+        password_repeat = request.form.get('password_repeat')
+        if password != password_repeat:
+            return render_template('task5_verification.html', email=email, password_error=True)
+        else:
+            password_hash = generate_password_hash(password)
+            app.session.add(models.Users(email=email, password=password_hash, verification_status='verified'))
+            app.session.commit()
+            return redirect(url_for('task5_main'))
+
+
+@app.route('/task5/')
+def task5_main():
+    email = session.get('user_email')
+    ip = request.remote_addr
+    time = datetime.now()
+    app.session.add(models.Ips(email=email, ip=ip, time=time))
+    app.session.commit()
+    user = app.session.query(models.Ips).filter_by(email=email).all()
+    return render_template('task5_main.html', array=reversed(user))
+
+
+@app.route('/task5/sign-out/')
+def sign_out():
+    session.pop('user_email', None)
+    return redirect(url_for('sign_in'))
+
+
+@app.route('/task5/work/', methods=['POST', 'GET'])
+def work():
+    email = session.get('user_email')
+    if request.method == 'GET':
+        user = app.session.query(models.Worker).filter_by(email=email).all()
+        app.session.commit()
+    else:
+        N = request.form['N']
+        time = datetime.now()
+        app.session.add(models.Worker(email=email, time=time, status='queued', n=N, p=0, q=0, time_start=time))
+        app.session.commit()
+        return redirect(url_for('work'))
+    if user:
+        return render_template('task5_worker.html', ans=reversed(user))
+    return render_template('task5_worker.html')
+
+
+@app.route('/task5/sign-in/', methods=['GET', 'POST'])
+def sign_in():
+    user_error = False
+    password_error = False
+    if request.method == 'GET':
+        return render_template('task5_login.html', user_error=user_error, password_error=password_error)
+    else:
+        email = request.form.get('email')
+        password = request.form.get('password')
+        session['user_email'] = email
+        user = app.session.query(models.Users).filter_by(email=email, status='verified')
+        if user is None:
+            user_error = True
+            return render_template('task5_login.html', user_error=user_error)
+        else:
+            cur_password = app.session.query(models.Users).filter_by(email=email, status='verified').first()
+            if not check_password_hash(password, cur_password):
+                password_error = True
+                return render_template('task5_login.html', password_error=password_error)
+            else:
+                return redirect(url_for('task5_main'))
 
 
 if __name__ == "__main__":
