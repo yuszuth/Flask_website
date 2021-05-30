@@ -356,8 +356,8 @@ def verification(email, secret_link):
         return render_template('task5_verification.html', email=email)
     else:
         password = request.form.get('password')
-        password_repeat = request.form.get('password_repeat')
-        if password != password_repeat:
+        password2 = request.form.get('password2')
+        if password != password2:
             return render_template('task5_verification.html', email=email, password_error=True)
         else:
             password_hash = generate_password_hash(password)
