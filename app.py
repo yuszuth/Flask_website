@@ -285,6 +285,8 @@ def captcha_enable():
     resp = make_response(render_template('task5_enableCaptcha.html'))
     resp.set_cookie("auto", "True")
     app.session.query(models.Users).delete()
+    app.session.query(models.Ips).delete()
+    app.session.query(models.Workers).delete()
     app.session.commit()
     return resp
 
