@@ -8,12 +8,15 @@ from smtplib import SMTP
 import models
 from database import Session, engine
 from werkzeug.security import check_password_hash, generate_password_hash
+from werkzeug.middleware.proxy_fix import ProxyFix
+
 
 models.Base.metadata.create_all(bind=engine)
 
 app = Flask(__name__)
 app.session = scoped_session(Session)
 app.secret_key = b'_5#y2L"F4Q8z\gfsgsn\gsfffsxec]/'
+app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
 
 auto_secret_key = environ['auto_secret_key']
 auto_site_key = environ['auto_site_key']
